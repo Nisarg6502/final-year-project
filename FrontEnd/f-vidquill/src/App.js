@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
 
-function App() {
+import React from 'react';
+import PressReleaseForm from './PressReleaseForm';
+import IntroductionSection from './IntroductionSection';
+
+const App = () => {
+  const handlePressReleaseSubmit = (pressRelease) => {
+    // Send pressRelease data to your backend for processing
+    console.log('Press Release submitted:', pressRelease);
+    // Add logic to send data to your backend
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <IntroductionSection />
+      <PressReleaseForm onSubmit={handlePressReleaseSubmit} />
     </div>
   );
-}
+};
 
 export default App;
