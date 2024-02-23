@@ -4,3 +4,5 @@ sentencepiece
 numpy
 pandas
 keybert
+PyMuPDF
+os
