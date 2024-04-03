@@ -1,0 +1,13 @@
+transformers
+torch
+sentencepiece
+numpy
+pandas
+keybert
+langchain
+openai
+PyPDF2
+pexels-api-py
+steamlit==1.24.0
+moviepy
+pysrt
