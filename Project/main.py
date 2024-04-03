@@ -3,6 +3,8 @@ import streamlit as st
 from summarization import summarize
 from pexels import search_images, query_images
 from keywords import extract_keywords
+from text_to_speech import tts_deepgram
+from image_captioning import img_caption
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 import PyPDF2
@@ -13,6 +15,10 @@ import matplotlib.pyplot as plt
 load_dotenv()
 
 pexels_api = os.getenv("PEXELS_API_KEY")
+
+# Set your Deepgram API key
+deepgram_api_key = os.getenv("DEEPGRAM_API_KEY")
+
 
 st.title("Convert Press Releases to short Video")
 st.sidebar.title("Submit your Press Release!")
@@ -70,3 +76,41 @@ if input_button:
     for image in images:
         st.image(image, caption='Your Image', use_column_width=True)
 
+    #Text to speech
+    # voice_options
+    voice_option_dict = {
+        "Asteria (Female)": "asteria",
+        "Luna (Female)": "luna",
+        "Stella (Female)": "stella",
+        "Athena (Female)": "athena",
+        "Hera (Female)": "hera",
+        "Orion (Male)": "orion",
+        "Arcas (Male)": "arcas",
+        "Perseus (Male)": "perseus",
+        "Angus (Male)": "angus",
+        "Orpheus (Male)": "orpheus",
+        "Helios (Male)": "helios",
+        "Zeus (Male)": "zeus"
+    }
+
+    #display the voice options
+    voice_opt_display = list(voice_option_dict.keys())
+
+    voice_option = st.selectbox(
+        "Select the voice option:", 
+        voice_opt_display, 
+        placeholder="Select voice option...",
+    )
+
+    if voice_option:
+        voice_option_value = voice_option_dict[voice_option]
+        st.write(f"You selected: {voice_option}")
+
+        # voice_option = "zeus"
+        tts_deepgram(text, voice_option_value, deepgram_api_key)
+
+    #Image captioning
+    img_url = './images.jpg' #Add path to image
+    captioned_text = img_caption(img_url)
+    st.write(captioned_text)
+    

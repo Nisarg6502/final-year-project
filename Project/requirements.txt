@@ -11,3 +11,5 @@ pexels-api-py
 steamlit==1.24.0
 moviepy
 pysrt
+requests
+time
