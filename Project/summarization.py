@@ -44,32 +44,70 @@
 
 #     return generated_summary
 
-from langchain.docstore.document import Document
-from langchain import PromptTemplate
-from langchain.chains.summarize import load_summarize_chain
+# from langchain.docstore.document import Document
+# from langchain import PromptTemplate
+# from langchain.chains.summarize import load_summarize_chain
+# from langchain_community.chat_models import ChatAnyscale
+
+
+# def summarize(text):
+
+#     docs = [Document(page_content=text)]
+
+#     llm = ChatAnyscale(model_name="meta-llama/Llama-2-7b-chat-hf", temperature=0.0)
+
+#     template = '''Write a one line title and provide a concise and short summary in 4-5 points for the following text.
+#     Text: `{text}`
+#     '''
+#     prompt = PromptTemplate(
+#         input_variables=['text'],
+#         template=template
+#     )
+
+#     chain = load_summarize_chain(
+#         llm,
+#         chain_type='stuff',
+#         prompt=prompt,
+#         verbose=False
+#     )
+#     output_summary = chain.run(docs)
+
+#     return output_summary
+
+
+
+from langchain.prompts import PromptTemplate
+from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.pydantic_v1 import BaseModel, Field
+from langchain.chat_models import ChatOpenAI
 from langchain_community.chat_models import ChatAnyscale
 
+# Define your desired data structure.
+class Output(BaseModel):
+    Title: str = Field(description="Title of the summary")
+    Summary: list[str] = Field(description="List of summary points")
 
 def summarize(text):
 
-    docs = [Document(page_content=text)]
+    llm = ChatAnyscale(model_name="meta-llama/Llama-2-70b-chat-hf", temperature=0.0)
+    # llm = ChatOpenAI(model_name ="gpt-3.5-turbo", temperature=0,streaming=True)
 
-    llm = ChatAnyscale(model_name="meta-llama/Llama-2-7b-chat-hf", temperature=0.0)
+    json_parser = JsonOutputParser(pydantic_object=Output)
 
-    template = '''Write a one line title and provide a concise and short summary in 4-5 points for the following text.
-    Text: `{text}`
-    '''
     prompt = PromptTemplate(
-        input_variables=['text'],
-        template=template
+        template="""
+            You are an expert Summarizer who answers only in json style format nothing else.
+            Your job is to summarize the news article in 5 points and give a title to the summary in the provided json format only.
+            Do not output anything else other than the json format.
+            {format_instructions}
+            News Article:\n{text}
+            """,
+        input_variables=["text"],
+        partial_variables={"format_instructions": json_parser.get_format_instructions()},
     )
 
-    chain = load_summarize_chain(
-        llm,
-        chain_type='stuff',
-        prompt=prompt,
-        verbose=False
-    )
-    output_summary = chain.run(docs)
+    chain = prompt | llm | json_parser
+
+    output_summary = chain.invoke({"text": text})
 
     return output_summary

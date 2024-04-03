@@ -55,11 +55,18 @@ input_button = st.sidebar.button("Submit Press Release")
 if input_button:
 
     # input from text
-    # generated_summary = summarize(text)
-    # keywords = extract_keywords(generated_summary)
-    # main_placeholder.write(generated_summary)
-    # st.write(keywords)
+    generated_summary = summarize(text)
+    summary_title = generated_summary['Title']
+    points = generated_summary['Summary']
+    summary_points= " ".join(points)
 
+    title_and_summary = summary_title + summary_points
+    main_placeholder.write(title_and_summary)
+
+    keywords = extract_keywords(title_and_summary)
+
+    keywords_list = keywords['Keywords']
+    st.write(keywords)
     # #Input from pdf
     # if pdf:
     #     pdf_reader = PyPDF2.PdfReader(pdf)
@@ -80,7 +87,7 @@ if input_button:
     for image in images:
         st.image(image, caption='Your Image', use_column_width=True)
     
-    stitched_video_path = images_to_video(images,output_dir='Images', video_size=(1920, 1080))
+    stitched_video_path = images_to_video(images)
     srt_file='subtitling.txt'
     subtitles = pysrt.open(srt_file)
     create_subtitle_clips(subtitles)

@@ -82,7 +82,13 @@ def process_press_release(stitched_video_path, srt_file='subtitling.txt', output
     final_video = CompositeVideoClip([video] + subtitle_clips)
 
     # Write subtitled video file
+    # begin, _ = os.path.splitext(os.path.basename(stitched_video_path))
+    # output_subtitled_file = os.path.join(output_subtitled_folder, begin + '_subtitled' + ".mp4")
+    # final_video.write_videofile(output_subtitled_file, codec='libx264')
+
     begin, _ = os.path.splitext(os.path.basename(stitched_video_path))
+    output_subtitled_folder = 'Output_Video_Subtitled'
+    os.makedirs(output_subtitled_folder, exist_ok=True)  # Create directory if it does not exist
     output_subtitled_file = os.path.join(output_subtitled_folder, begin + '_subtitled' + ".mp4")
     final_video.write_videofile(output_subtitled_file, codec='libx264')
 
@@ -92,8 +98,8 @@ def process_press_release(stitched_video_path, srt_file='subtitling.txt', output
 # images = query_images()
 # images_to_video(images)
 
-# Step 4: Process Press Release
-process_press_release(os.path.join('Output_Video', "stitched_video.mp4"))
+# # Step 4: Process Press Release
+# process_press_release(os.path.join('Output_Video', "stitched_video.mp4"))
 
 
 # In[ ]:
