@@ -22,14 +22,15 @@ def images_to_video(images, output_dir='Images', video_size=(1920, 1080)):
         image.save(image_path, "JPEG")
         image_paths.append(image_path)
 
-    stitch_images(image_paths, output_dir, video_size)
+    output_video_path = stitch_images(image_paths, output_dir, video_size)
+    return output_video_path
 
 # Step 1: Stitch Images
 def stitch_images(image_paths, output_dir='Output_Video', video_size=(1920, 1080)):
     os.makedirs(output_dir, exist_ok=True)
     
     # Get list of image paths
-    image_paths = [str(img_path) for img_path in Path(image_paths).glob('*.jpg')]
+    #image_paths = [str(img_path) for img_path in Path(image_dir).glob('*.jpg')]
     
     # Load each image as a video clip and set duration to 5 seconds
     clips = [VideoFileClip(image_path).resize(video_size).set_duration(5).crossfadein(0.5).crossfadeout(0.5).set_position(lambda t: ("left", "center")) for image_path in image_paths]
@@ -38,8 +39,9 @@ def stitch_images(image_paths, output_dir='Output_Video', video_size=(1920, 1080
     final_clip = concatenate_videoclips(clips)
     
     # Write the final video to the output directory
-    output_video_path = os.path.join(output_dir, "stitched_video.mp4")
+    output_video_path = os.path.join(output_dir, "initial_stitched_video.mp4")
     final_clip.write_videofile(output_video_path, fps=10)
+    return output_video_path
 
 # Step 2: Define time_to_seconds function as before
 def time_to_seconds(time_obj):

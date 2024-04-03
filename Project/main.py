@@ -11,6 +11,9 @@ import PyPDF2
 import os
 import matplotlib.pyplot as plt
 from PIL_Testing import images_to_video
+from PIL_Testing import create_subtitle_clips
+from PIL_Testing import process_press_release
+import pysrt
 
 # Load environment variables from .env file
 load_dotenv()
@@ -77,7 +80,11 @@ if input_button:
     for image in images:
         st.image(image, caption='Your Image', use_column_width=True)
     
-    images_to_video(images,output_dir='Images', video_size=(1920, 1080))
+    stitched_video_path = images_to_video(images,output_dir='Images', video_size=(1920, 1080))
+    srt_file='subtitling.txt'
+    subtitles = pysrt.open(srt_file)
+    create_subtitle_clips(subtitles)
+    process_press_release(stitched_video_path)
 
     #Text to speech
     # voice_options
