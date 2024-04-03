@@ -8,8 +8,8 @@ langchain
 openai
 PyPDF2
 pexels-api-py
-steamlit==1.24.0
+#steamlit==1.24.0
 moviepy
 pysrt
 requests
-time
+#time

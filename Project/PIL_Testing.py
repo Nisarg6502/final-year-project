@@ -10,13 +10,26 @@ from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip
 import pysrt
 from moviepy.editor import VideoFileClip, concatenate_videoclips
 from pathlib import Path
+from pexels import query_images
+from pexels import search_images
+
+def images_to_video(images, output_dir='Images', video_size=(1920, 1080)):
+    os.makedirs(output_dir, exist_ok=True)
+    image_paths = []
+
+    for i, image in enumerate(images):
+        image_path = os.path.join(output_dir, f"image_{i}.jpg")
+        image.save(image_path, "JPEG")
+        image_paths.append(image_path)
+
+    stitch_images(image_paths, output_dir, video_size)
 
 # Step 1: Stitch Images
-def stitch_images(image_dir='Images', output_dir='Output_Video', video_size=(1920, 1080)):
+def stitch_images(image_paths, output_dir='Output_Video', video_size=(1920, 1080)):
     os.makedirs(output_dir, exist_ok=True)
     
     # Get list of image paths
-    image_paths = [str(img_path) for img_path in Path(image_dir).glob('*.jpg')]
+    image_paths = [str(img_path) for img_path in Path(image_paths).glob('*.jpg')]
     
     # Load each image as a video clip and set duration to 5 seconds
     clips = [VideoFileClip(image_path).resize(video_size).set_duration(5).crossfadein(0.5).crossfadeout(0.5).set_position(lambda t: ("left", "center")) for image_path in image_paths]
@@ -72,7 +85,10 @@ def process_press_release(stitched_video_path, srt_file='subtitling.txt', output
     final_video.write_videofile(output_subtitled_file, codec='libx264')
 
 # Step 1: Stitch Images
-stitch_images()
+# list_query = ["Orange", "Cat", "Sleeping", "Table"]
+# query_id = search_images(list_query, api_key)
+# images = query_images()
+# images_to_video(images)
 
 # Step 4: Process Press Release
 process_press_release(os.path.join('Output_Video', "stitched_video.mp4"))
