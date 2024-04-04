@@ -27,3 +27,5 @@ def img_caption(img_url):
 
     # print("Time taken:", elapsed_time, "seconds"
 
+# image = img_caption("image1.jpg")
+# print(image)

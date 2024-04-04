@@ -13,3 +13,6 @@ moviepy
 pysrt
 requests
 #time
+deepgram-sdk
+deepgram-captions
+ipython

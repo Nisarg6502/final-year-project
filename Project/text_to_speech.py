@@ -1,4 +1,9 @@
 import requests
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+deepgram_api_key = os.getenv("DEEPGRAM_API_KEY")
 
 def tts_deepgram(text, voice_option, api_key ):
     # Define the API endpoint
@@ -31,4 +36,7 @@ def tts_deepgram(text, voice_option, api_key ):
         print("File saved successfully.")
     else:
         print(f"Error: {response.status_code} - {response.text}")
+
+# text = "Hello, this is a test message. Welcome to the world of text-to-speech. This is a test message. Let's see how it works."
+# tts_deepgram(text, "stella", deepgram_api_key) 
 
