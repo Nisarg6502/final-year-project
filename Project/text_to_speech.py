@@ -16,10 +16,12 @@ def tts_deepgram(text, voice_option, api_key ):
         "Content-Type": "application/json"
     }
 
-    text = f"""{text}"""
+    # text = f"""{text}"""
+    text = '. '.join(text)
     escaped_text = text.replace('"', '\\"')  # Escape double quotes
-    escaped_text = escaped_text.replace(".", "...") # adding ellipses inserts a long pause.
-    escaped_text = escaped_text.replace("?", "...") 
+    escaped_text = escaped_text.replace(".", ". ...") # adding ellipses inserts a long pause.
+    escaped_text = escaped_text.replace("?", ". ...") 
+    print(escaped_text)
     # Define the payload
     payload = {
         "text": escaped_text

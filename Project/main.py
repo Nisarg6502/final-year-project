@@ -200,7 +200,7 @@ if input_button and voice_option is not None:
 
     # Display the summary points
     points = generated_summary['Summary']
-    summary_points = " ".join(points)
+    summary_points = ". ".join(points)
     main_placeholder.write(summary_points)
 
     title_and_summary = summary_title + ": " + summary_points
@@ -219,16 +219,18 @@ if input_button and voice_option is not None:
     print(keywords)
 
     keywords_list = keywords['Keywords']
-    print(keywords_list[:5])
+    print(keywords_list[:8])
 
     # # Query sql database
-    # for keyword in keywords_list:
-    #     result= query_images(conn=conn,tags=keyword)
-    #     for row in result:
+    images = []
+    for keyword in keywords_list:
+        result= query_images_database(conn=conn,tags=keyword)
+        for row in result:
 
-    #         image_data = row[0]
-    #         image = Image.open(io.BytesIO(image_data))
-    #         st.image(image)
+            image_data = row[0]
+            image = Image.open(io.BytesIO(image_data))
+            images.append(image)
+            st.image(image)
     ##################################################################################
     ##################################################################################
     #
@@ -253,13 +255,13 @@ if input_button and voice_option is not None:
     #         st.write(keywords)
 
     #Images Pexel
-    query_ids = search_images(keywords_list[:5], pexels_api)
+    # query_ids = search_images(keywords_list[:5], pexels_api)
 
-    images = query_images(query_ids, pexels_api)
+    # images = query_images(query_ids, pexels_api)
 
-    for image in images:
-        st.image(image, use_column_width=True)
-    #
+    # for image in images:
+    #     st.image(image, use_column_width=True)
+    # #
     #
     #
     #
@@ -318,7 +320,7 @@ if input_button and voice_option is not None:
     # voice_option_value = voice_option_dict[voice_option]
     # st.write(f"You selected: {voice_option}")
 
-    tts_deepgram(generated_summary, voice_option_value, deepgram_api_key)
+    tts_deepgram(points, voice_option_value, deepgram_api_key)
 
     AUDIO_FILE = "./your_output_file.mp3"
     st.header("Generated Voiceover")
