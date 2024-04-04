@@ -7,8 +7,9 @@ from image_captioning import img_caption
 from PIL_Testing import images_to_video
 from PIL_Testing import create_subtitle_clips
 from PIL_Testing import process_press_release
-from image_database import initialize_database, store_image, query_images
+from image_database import initialize_database, store_image, query_images_database
 from audio_to_sub import transcribe_audio, srt_from_transcription
+from Audio_Testing import merge_av
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from typing_extensions import Concatenate
@@ -134,7 +135,7 @@ if caption_and_store_image:
 ######################################################################################
 # Query the database for images based on tags/caption
 if query_database_button:
-    result = query_images(conn=conn,tags=query)
+    result = query_images_database(conn=conn,tags=query)
 
     for row in result:
 
@@ -149,12 +150,41 @@ if query_database_button:
 #
 #
 #
+
+voice_option_dict = {
+        "Asteria (Female)": "asteria",
+        "Luna (Female)": "luna",
+        "Stella (Female)": "stella",
+        "Athena (Female)": "athena",
+        "Hera (Female)": "hera",
+        "Orion (Male)": "orion",
+        "Arcas (Male)": "arcas",
+        "Perseus (Male)": "perseus",
+        "Angus (Male)": "angus",
+        "Orpheus (Male)": "orpheus",
+        "Helios (Male)": "helios",
+        "Zeus (Male)": "zeus"
+    }
+
+#display the voice options
+voice_opt_display = list(voice_option_dict.keys())
+
+voice_option = st.selectbox(
+    "Select the voice option:", 
+    voice_opt_display, 
+    index=None,
+    placeholder="Select voice option...",
+)
+
+voice_option_value = voice_option_dict[voice_option]
+st.write(f"You selected: {voice_option}")
+
 ######################################################################################
 ######################################################################################
 # Input Button Activation Section
 ######################################################################################
 ######################################################################################
-if input_button:
+if input_button and voice_option is not None:
 
     ##################################################################################
     # Summarization
@@ -186,19 +216,19 @@ if input_button:
     # Keywords Extraction
     ##################################################################################
     keywords = extract_keywords(title_and_summary)
-    # st.write(keywords)
+    print(keywords)
 
     keywords_list = keywords['Keywords']
-    st.write(keywords)
+    print(keywords_list[:5])
 
-    # Query sql database
-    for keyword in keywords_list:
-        result= query_images(conn=conn,tags=keyword)
-        for row in result:
+    # # Query sql database
+    # for keyword in keywords_list:
+    #     result= query_images(conn=conn,tags=keyword)
+    #     for row in result:
 
-            image_data = row[0]
-            image = Image.open(io.BytesIO(image_data))
-            st.image(image)
+    #         image_data = row[0]
+    #         image = Image.open(io.BytesIO(image_data))
+    #         st.image(image)
     ##################################################################################
     ##################################################################################
     #
@@ -222,12 +252,13 @@ if input_button:
     #         main_placeholder.write(generated_summary)
     #         st.write(keywords)
 
-    # #Images Pexel
-    # query_ids = search_images(query=["Moon", "Space", "Stars"], api_key= pexels_api)
-    # images = query_images(query_ids=query_ids, api_key=pexels_api)
+    #Images Pexel
+    query_ids = search_images(keywords_list[:5], pexels_api)
 
-    # for image in images:
-    #     st.image(image, caption='Your Image', use_column_width=True)
+    images = query_images(query_ids, pexels_api)
+
+    for image in images:
+        st.image(image, use_column_width=True)
     #
     #
     #
@@ -259,42 +290,41 @@ if input_button:
 
     # if voiceover_toggle:
     #voice_options
-    voice_option_dict = {
-        "Asteria (Female)": "asteria",
-        "Luna (Female)": "luna",
-        "Stella (Female)": "stella",
-        "Athena (Female)": "athena",
-        "Hera (Female)": "hera",
-        "Orion (Male)": "orion",
-        "Arcas (Male)": "arcas",
-        "Perseus (Male)": "perseus",
-        "Angus (Male)": "angus",
-        "Orpheus (Male)": "orpheus",
-        "Helios (Male)": "helios",
-        "Zeus (Male)": "zeus"
-    }
+    # voice_option_dict = {
+    #     "Asteria (Female)": "asteria",
+    #     "Luna (Female)": "luna",
+    #     "Stella (Female)": "stella",
+    #     "Athena (Female)": "athena",
+    #     "Hera (Female)": "hera",
+    #     "Orion (Male)": "orion",
+    #     "Arcas (Male)": "arcas",
+    #     "Perseus (Male)": "perseus",
+    #     "Angus (Male)": "angus",
+    #     "Orpheus (Male)": "orpheus",
+    #     "Helios (Male)": "helios",
+    #     "Zeus (Male)": "zeus"
+    # }
 
-    #display the voice options
-    voice_opt_display = list(voice_option_dict.keys())
+    # #display the voice options
+    # voice_opt_display = list(voice_option_dict.keys())
 
-    voice_option = st.selectbox(
-        "Select the voice option:", 
-        voice_opt_display, 
-        index=None,
-        placeholder="Select voice option...",
-    )
+    # voice_option = st.selectbox(
+    #     "Select the voice option:", 
+    #     voice_opt_display, 
+    #     index=None,
+    #     placeholder="Select voice option...",
+    # )
 
-    if voice_option:
-        voice_option_value = voice_option_dict[voice_option]
-        st.write(f"You selected: {voice_option}")
+    # voice_option_value = voice_option_dict[voice_option]
+    # st.write(f"You selected: {voice_option}")
 
-        tts_deepgram(text, voice_option_value, deepgram_api_key)
+    tts_deepgram(generated_summary, voice_option_value, deepgram_api_key)
 
-        AUDIO_FILE = "./your_output_file.mp3"
-        st.header("Generated Voiceover")
-        audio_file = open(AUDIO_FILE, 'rb')
-        audio_bytes = audio_file.read()
-        st.audio(audio_bytes, format='audio/mp3')
+    AUDIO_FILE = "./your_output_file.mp3"
+    st.header("Generated Voiceover")
+    audio_file = open(AUDIO_FILE, 'rb')
+    audio_bytes = audio_file.read()
+    st.audio(audio_bytes, format='audio/mp3')
 
     AUDIO_FILE = "./your_output_file.mp3"    
     # Transcribe the audio and generate srt file
@@ -307,13 +337,20 @@ if input_button:
 # st.write(captioned_text)
 
     # Toggle button for subtitling feature
-    subtitling_toggle = st.toggle("Enable Subtitling")
+    # subtitling_toggle = st.toggle("Enable Subtitling")
 
 
-    # Generate srt file if subtitling is enabled
-    if subtitling_toggle:
-        srt_file = 'subtitling.txt'
-        subtitles = pysrt.open(srt_file)
-        create_subtitle_clips(subtitles)
-        process_press_release(stitched_video_path)
-    
+   
+    srt_file = 'subtitling.txt'
+    subtitles = pysrt.open(srt_file)
+    create_subtitle_clips(subtitles)
+    process_press_release(stitched_video_path)
+    VIDEO_FILE = "Output_Video_Subtitled/initial_stitched_video_subtitled.mp4"
+    merge_av(AUDIO_FILE, VIDEO_FILE)
+
+    FINAL_VIDEO_FILE = "./Final_Merged.mp4"
+    video_file = open(FINAL_VIDEO_FILE, 'rb')
+    video_bytes = video_file.read()
+
+    st.header("Final Video")
+    st.video(video_bytes)

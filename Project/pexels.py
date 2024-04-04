@@ -52,3 +52,7 @@ def query_images(query_ids, api_key):
             print("Failed to fetch image. Status code:", response.status_code)
 
     return images
+
+
+
+    # print(image)

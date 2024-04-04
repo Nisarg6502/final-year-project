@@ -1,11 +1,39 @@
 1
-00:00:00,160 --> 00:00:02,800
-Hello. This is a test message. Welcome to
+00:00:00,480 --> 00:00:03,360
+Wint Idi's Chandrayaan 3 mission successfully lands on
 
 2
-00:00:02,800 --> 00:00:05,360
-the world of text to speech. This is
+00:00:03,360 --> 00:00:06,000
+Moon South Pole to Sunriq. Windy's Chandrayaan 3
 
 3
-00:00:05,360 --> 00:00:08,340
-a test message. Let's see how it works.
+00:00:06,000 --> 00:00:08,320
+mission successfully landed on the Moon South Polar
+
+4
+00:00:08,320 --> 00:00:10,625
+region. New India became the 4th country to
+
+5
+00:00:10,625 --> 00:00:13,185
+successfully land on the Moon's surface. ISRO shared
+
+6
+00:00:13,185 --> 00:00:15,845
+videos and images of the Moon Vikram Lander
+
+7
+00:00:15,905 --> 00:00:18,145
+and Projan Rover on social media. While Projan
+
+8
+00:00:18,145 --> 00:00:20,130
+Rover rolled over the Moon's surface for a
+
+9
+00:00:20,130 --> 00:00:22,530
+distance of 8 meters, ISRO plans to attempt
+
+10
+00:00:22,530 --> 00:00:24,070
+a manned lunar mission next.

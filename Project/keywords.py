@@ -13,8 +13,8 @@ from langchain_community.chat_models import ChatAnyscale
 
 def extract_keywords(output_summary):
     
-    # llm = ChatOpenAI(model_name ="gpt-3.5-turbo", temperature=0,streaming=True)
-    llm = ChatAnyscale(model_name="meta-llama/Llama-2-70b-chat-hf", temperature=0.0)
+    llm = ChatOpenAI(model_name ="gpt-3.5-turbo", temperature=0,streaming=True)
+    # llm = ChatAnyscale(model_name="meta-llama/Llama-2-70b-chat-hf", temperature=0.0)
     # Define your desired data structure.
     class Keywords(BaseModel):
         Keywords: list[str] = Field(description="A list of keywords")

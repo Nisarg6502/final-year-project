@@ -34,7 +34,7 @@ def store_image(conn, image, tags):
     c.execute('INSERT INTO images (image, tags) VALUES (?, ?)', (sqlite3.Binary(image_data), tags))
     conn.commit()
 
-def query_images(conn, tags):
+def query_images_database(conn, tags):
     """
     Queries the database using the provided tags and returns the images.
 
